@@ -1,6 +1,4 @@
 const { Sequelize, DataTypes, Op } = require("sequelize");
-const bcrypt = require("bcrypt");
-const zlib = require("zlib");
 
 const sequelize = new Sequelize("seq_model", "root", "", {
   host: "localhost",
@@ -19,7 +17,7 @@ const User = sequelize.define(
     firstname: {
       type: DataTypes.STRING,
       required: true,
-
+      allowNull: false,
       get() {
         const rawValue = this.getDataValue("firstname");
         return rawValue.toUpperCase();
@@ -29,6 +27,15 @@ const User = sequelize.define(
       type: DataTypes.STRING,
       required: true,
       allowNull: true,
+    },
+    fullname: {
+      type: DataTypes.VIRTUAL,
+      get() {
+        return `${this.firstname} ${this.lastname}`;
+      },
+      set(value) {
+        throw new console.error("Not to match `fullname` value!");
+      },
     },
     password: {
       type: DataTypes.STRING,
@@ -43,42 +50,28 @@ const User = sequelize.define(
     age: {
       type: DataTypes.INTEGER,
     },
-    description: {
-      type: DataTypes.STRING,
-      get() {
-        const storedValue = this.getDataValue("description");
-        const gzippedBuffer = zlib.inflateSync(
-          Buffer.from(storedValue, "base64")
-        );
-
-        return gzippedBuffer.toString();
-      },
-      set(value) {
-        const gzippedBuffer = zlib.deflateSync(value);
-        this.setDataValue("description", gzippedBuffer.toString("base64"));
-      },
-    },
   },
   {
     freezeTableName: true,
     timestamps: false,
   }
 );
-
 User.sync({ alter: true })
 
   .then(async (data) => {
-    const res = await User.create({
-      description: "Hello Guys! how are you",
+    const t = await User.create({
+      firstname: "mukesh",
+      lastname: "panara",
     });
-
-    return res;
+    console.log("data inserted", t);
+    return t;
   })
 
   .then((data) => {
     // data.forEach((element) => {
     //   console.log(element.toJSON());
     // });
+    console.log(data.toJSON());
   })
 
   .catch((err) => {
