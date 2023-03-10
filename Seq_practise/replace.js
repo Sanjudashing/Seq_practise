@@ -67,17 +67,11 @@ const User = sequelize.define(
 
 User.sync()
   .then(async (data) => {
-    // [result, metadata] = await sequelize.query(
-    //   "Update user set age=50 where firstname='sunny' ",
-    //   {
-    //     type: QueryTypes.SELECT,
-    //   }
-    // );
     const t = await sequelize.query(
-      'SELECT *, "text with literal $$1 and literal $$firstname" as t FROM user WHERE firstname = $1',
+      'SELECT *, "text with literal $$1 and literal $$firstname" as t FROM user WHERE firstname = $firstname',
       {
         // replacements: { firstname: "sunny" },
-        bind: ["parth"],
+        bind: { firstname: "parth" },
         type: QueryTypes.SELECT,
       }
     );
