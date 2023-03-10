@@ -34,6 +34,10 @@ const Capital = sequelize.define(
       type: DataTypes.STRING,
       unique: true,
     },
+    message: {
+      type: DataTypes.STRING,
+      unique: true,
+    },
   },
   {
     freezeTableName: true,
@@ -41,27 +45,40 @@ const Capital = sequelize.define(
   }
 );
 
-Country.hasOne(Capital);
+Country.hasMany(Capital);
 Capital.belongsTo(Country);
-// Country.hasMany(Capital);
-// Capital.belongsTo(Country);
+
 let country, capital;
 
 sequelize
   .sync()
-  .then(async () => {
-    return await Country.findOne({ where: { countryName: "Australia" } });
+  .then(() => {
+    return Country.findOne({ where: { countryName: "Pakistan" } });
+    // Capital.bulkCreate([
+    //   {
+    //     message: "This is capital1.",
+    //   },
+    //   {
+    //     message: "This is capital2.",
+    //   },
+    //   {
+    //     message: "This is capital3.",
+    //   },
+    //   {
+    //     message: "This is capital4.",
+    //   },
+    // ]);
   })
   .then((data) => {
     country = data;
-
-    return Capital.findOne({ where: { capitalName: "Paris" } });
+    // return Capital.findAll();
+    return country.countCapital();
   })
   .then((data) => {
-    capital = data;
-    return capital.setCountry(country);
+    // capital = data;
+    // return country.addCapital(capital);
+    console.log(data);
   })
-
   .catch((err) => {
     console.log(err);
   });
