@@ -68,7 +68,7 @@ let customer, product;
 sequelize
   .sync()
   .then(() => {
-    return Customer.findOne({ where: { customerName: "customer1" } });
+    return Customer.findOne({ where: { customerName: "customer3" } });
     // Customer.bulkCreate([
     //   {
     //     customerName: "customer1",
@@ -101,7 +101,7 @@ sequelize
   })
   .then((data) => {
     customer = data;
-    return Product.findOne({ where: { productName: "product2" } });
+    return Product.findOne({ where: { productName: "product1" } });
 
     //     // return Capital.findAll();
   })
